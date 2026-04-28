@@ -11,6 +11,7 @@ const FoodMerchant = sequelize.define(
         cuisine: { type: DataTypes.STRING },
         foodMerchantProfile: { type: DataTypes.STRING },
         location: { type: DataTypes.GEOGRAPHY("POINT", 4326) },
+        description: { type: DataTypes.STRING },
         openingStartHours: { type: DataTypes.TIME(6) },
         openingEndHours: {type: DataTypes.TIME(6) }
     },
