@@ -18,7 +18,7 @@ const getMenuItemsMerchant = async (foodMerchantId) => {
             }
         });
 
-        return menuItemsMerchant
+        return menuItemsMerchant;
     } catch (err) {
         console.log(`Unable to get menu item for merchant: ${err}`)
     }
