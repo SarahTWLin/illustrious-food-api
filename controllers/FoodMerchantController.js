@@ -31,6 +31,35 @@ const getFoodMerchantsNearby = async (currentLocationX, currentLocationY) => {
     }
 }
 
+const getApproximateTimeOfDelivery = async (currentLocationX, currentLocationY, foodMerchantId) => {
+    try {
+        const [approximateTime, metadata] = await sequelize.query(
+            `
+            WITH merchant AS (
+                SELECT ST_X(ST_Transform(location::geometry, 4326)) AS foodMerchantLocationX, 
+                    ST_Y(ST_Transform(location::geometry, 4326)) AS foodMerchantLocationY
+                FROM foodordering.foodmerchants 
+                WHERE "foodMerchantId"=${foodMerchantId} 
+            )
+            SELECT 
+                ROUND(
+                    ST_DistanceSphere(
+                        ST_MakePoint(merchant.foodMerchantLocationX, merchant.foodMerchantLocationY), 
+                        ST_MakePoint(${currentLocationX}, ${currentLocationY})
+                    ) / (15)
+                ) AS approximateTime FROM merchant;
+            `
+        );
+
+        return approximateTime[0];
+    }
+    catch (error) {
+        console.log(`Unable to get approximate time delivery: ${error}`);
+    }
+    
+}
+
 module.exports = {
-    getFoodMerchantsNearby
+    getFoodMerchantsNearby,
+    getApproximateTimeOfDelivery
 }
